@@ -58,28 +58,26 @@ def solve_part1(input: str) -> int:
 
 def solve_part2(input: str) -> int:
 
-    current_location = (0,0)
-    house_listing = {current_location}
+    start_location = (0,0)
+    house_listing = {start_location}
 
+    # Santa and robo-santa had their own moving plan
     santa_road = input[::2]
     robo_santa_road = input[1::2]
 
-    # Santa
-    for direction in santa_road:
+    # They each move from houses to house
+    for journey in [santa_road, robo_santa_road]:
 
-        next_house = update_location(start=current_location, move=direction)
-        house_listing.add(next_house)
+        # Begin at start_location
+        current_location = start_location
 
-        current_location = next_house
+        # and going their own plan
+        for direction in journey:
 
-    # and robo-Santa
-    current_location = (0,0)
-    for direction in robo_santa_road:
+            next_house = update_location(start=current_location, move=direction)
+            house_listing.add(next_house)
 
-        next_house = update_location(start=current_location, move=direction)
-        house_listing.add(next_house)
-
-        current_location = next_house
+            current_location = next_house
 
     return len(house_listing)
 
