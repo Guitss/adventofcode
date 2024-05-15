@@ -24,6 +24,24 @@ ones that were on, and turning on the ones that were off.
 turn off 499,499 through 500,500 would turn off (or leave off) the middle four lights.
 
 After following the instructions, how many lights are lit?
+
+--- Part Two ---
+You just finish implementing your winning light pattern when you realize you mistranslated Santa's message from Ancient Nordic Elvish.
+
+The light grid you bought actually has individual brightness controls; each light can have a brightness of zero or more. The lights all start at zero.
+
+The phrase turn on actually means that you should increase the brightness of those lights by 1.
+
+The phrase turn off actually means that you should decrease the brightness of those lights by 1, to a minimum of zero.
+
+The phrase toggle actually means that you should increase the brightness of those lights by 2.
+
+What is the total brightness of all lights combined after following Santa's instructions?
+
+For example:
+
+turn on 0,0 through 0,0 would increase the total brightness by 1.
+toggle 0,0 through 999,999 would increase the total brightness by 2000000.
 """
 from typing import Iterator
 
@@ -424,9 +442,41 @@ class Grid:
                 yield light
 
 
-def solve_part1(input: str):
+class SantaBrightningLight(SantaLight):
 
-    grid = Grid()
+    def __init__(self):
+        SantaLight.__init__(self)
+        self.state: int = 0
+
+    def __repr__(self) -> str:
+        return str(self.state)
+
+    def switch_on(self) -> None:
+        self.state += 1
+
+    def switch_off(self) -> None:
+        self.state = max([self.state-1, 0])
+
+    def toggle(self) -> None:
+        self.state += 2
+
+
+class BrightningGrid(Grid):
+
+    def __init__(self):
+        Grid.__init__(self)
+
+        self._grid: list[list[SantaBrightningLight]] = (
+            [
+                [SantaBrightningLight() for _ in range(BrightningGrid.nb_cols)]
+                for __ in range(BrightningGrid.nb_rows)
+            ]
+        )
+
+
+def solve(input: str, brightness: bool = False):
+
+    grid = BrightningGrid() if brightness else Grid()
 
     for order in input.split('\n'):
         if not order:
@@ -443,14 +493,19 @@ def solve_part1(input: str):
         elif order.startswith('turn off'):
             grid.switch_off_lights(_from=start, to=end)
 
-    print(grid)
+    # print(grid)
     return grid.lights_on_count
+
+
+def solve_part1(input: str):
+    return solve(input, brightness=False)
+
+
+def solve_part2(input: str):
+    return solve(input, brightness=True)
 
 
 if __name__ == "__main__":
 
-    # print('test part1:', solve_part1("turn on 0,0 through 9,9"))
-    # print('test part1:', solve_part1("toggle 0,0 through 9,0"))
-    # print('test part1:', solve_part1("turn on 0,0 through 9,9\nturn off 4,4 through 5,5"))
-
     print('part1:', solve_part1(INPUT))
+    print('part2:', solve_part2(INPUT))
