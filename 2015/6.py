@@ -25,6 +25,7 @@ turn off 499,499 through 500,500 would turn off (or leave off) the middle four l
 
 After following the instructions, how many lights are lit?
 """
+from typing import Generator
 
 
 INPUT = """
@@ -336,20 +337,20 @@ GRID_COLUMNS = 1_00
 class SantaLight:
 
     def __init__(self):
-        self.light: bool = False
+        self.state: bool = False
 
     def __repr__(self) -> str:
-        return 'O' if self.light else 'X'
+        return 'O' if self.state else 'X'
 
     @property
-    def light_on(self) -> None:
-        self.light = True
+    def switch_on(self) -> None:
+        self.state = True
     @property
-    def light_off(self) -> None:
-        self.light = False
+    def switch_off(self) -> None:
+        self.state = False
     @property
-    def toggle_light(self) -> None:
-        self.light = not self.light
+    def toggle(self) -> None:
+        self.state = not self.state
 
 
 class Grid:
@@ -393,11 +394,57 @@ class Grid:
 
         return '\n'.join(text)
 
+    @property
+    def lights_on_count(self):
+        return sum([light.state for line in self._grid for light in line])
+
+    def toggle_lights(self, _from, to):
+        for light in self._get_lights_set(_from, to):
+            light.
+        print('toggle', _from, to)
+        pass
+
+    def switch_off_lights(self, _from, to):
+        print('off', _from, to)
+        pass
+
+    def switch_on_lights(self, _from, to):
+        print('on', _from, to)
+        pass
+
+    def _get_lights_set(self, _from, to) -> Generator[SantaLight]:
+        pass
+
+        # start = (_from.split(',')[], to[])
+        # end =  (_from[], to[])
+        #
+        # for lines in self.grid[_from[]]:
+        #
+        #     yield light
+
 
 def solve_part1(input: str):
-    pass
+
+    grid = Grid()
+
+    for order in input.split('\n'):
+        if not order:
+            continue
+
+        raw_order = order.split(' ')
+        start = raw_order[-3]
+        end = raw_order[-1]
+
+        if order.startswith('toggle'):
+            grid.toggle_lights(_from=start, to=end)
+        elif order.startswith('turn on'):
+            grid.switch_off_lights(_from=start, to=end)
+        elif order.startswith('turn off'):
+            grid.switch_on_lights(_from=start, to=end)
+
+    return grid.lights_on_count
 
 
 if __name__ == "__main__":
 
-    print(Grid())
+    print('part1:', solve_part1(INPUT))
