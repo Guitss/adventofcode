@@ -1092,10 +1092,9 @@ def solve_part2(input: str):
     nicies_count = 0
 
     for text in input.split():
-        # TODO: not catching the overlapping duplicates :o
         sub_string_by_2 = [text[i:i+2] for i in range(len(text))][:-1]
-        # sub_string_by_2 = [text[i:i+2] for i in range(0, len(text), 2) if len(text[i:i+3]) == 2]
-        if len(sub_string_by_2) == len(set(sub_string_by_2)):
+        duplicates = [sub for sub in sub_string_by_2 if text.count(sub) > 1]
+        if not duplicates:
             print('no duplicates')
             continue
 
