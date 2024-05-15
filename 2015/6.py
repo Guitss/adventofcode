@@ -7,7 +7,11 @@ Furthermore, because you've been especially nice this year, Santa has mailed you
 instructions on how to display the ideal lighting configuration.
 
 Lights in your grid are numbered from 0 to 999 in each direction; the lights at each
-corner are at 0,0, 0,999, 999,999, and 999,0. The instructions include whether to turn on, turn off, or toggle various inclusive ranges given as coordinate pairs. Each coordinate pair represents opposite corners of a rectangle, inclusive; a coordinate pair like 0,0 through 2,2 therefore refers to 9 lights in a 3x3 square. The lights all start turned off.
+corner are at 0,0, 0,999, 999,999, and 999,0. The instructions include whether to turn
+on, turn off, or toggle various inclusive ranges given as coordinate pairs. Each
+coordinate pair represents opposite corners of a rectangle, inclusive; a coordinate pair
+ like 0,0 through 2,2 therefore refers to 9 lights in a 3x3 square. The lights all start
+ turned off.
 
 To defeat your neighbors this year, all you have to do is set up your lights by doing
 the instructions Santa sent you in order.
@@ -326,10 +330,74 @@ toggle 580,592 through 671,900
 toggle 296,687 through 906,775
 """
 
+GRID_LINES = 1_00
+GRID_COLUMNS = 1_00
+
+class SantaLight:
+
+    def __init__(self):
+        self.light: bool = False
+
+    def __repr__(self) -> str:
+        return 'O' if self.light else 'X'
+
+    @property
+    def light_on(self) -> None:
+        self.light = True
+    @property
+    def light_off(self) -> None:
+        self.light = False
+    @property
+    def toggle_light(self) -> None:
+        self.light = not self.light
+
+
+class Grid:
+    nb_rows: int = GRID_LINES
+    nb_cols: int = GRID_COLUMNS
+
+    def __init__(self):
+        self._grid: list[list[SantaLight]] = (
+            [
+                [SantaLight()] * Grid.nb_cols
+            ] * Grid.nb_rows
+        )
+
+    def __repr__(self) -> str:
+        text = []
+
+        sep_every = 5
+        lights_spacing = ''
+        lights_separator = ' '
+
+        for row_index, lights_row in enumerate(self._grid):
+
+            line = []
+
+            for colum_index, light in enumerate(lights_row):
+                line.append(str(light))
+
+                # Add column separator
+                if (colum_index+1) % sep_every == 0:
+                    line[-1] += lights_separator
+                else:
+                    line[-1] += lights_spacing
+
+
+            # Add row separator
+            if row_index and row_index % sep_every == 0:
+                text.append('')
+
+            # Merge line to text
+            text.append(''.join(line))
+
+        return '\n'.join(text)
+
 
 def solve_part1(input: str):
     pass
 
 
 if __name__ == "__main__":
-    pass
+
+    print(Grid())
