@@ -20,8 +20,11 @@ Now find one that starts with six zeroes.
 """
 import hashlib
 
+from utils import load_input
 
-INPUT = "bgvyzdsv"
+
+INPUT = load_input(__file__)
+
 
 
 def solve(input: str, mask='00000'):
